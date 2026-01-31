@@ -50,6 +50,17 @@ REACT_APP_API_URL=http://localhost:4000/local/
 
 > **Note:** Local API uses mock authentication. Cognito features won't work locally.
 
+## Development Plan
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| 1 | Project Setup - Local dev environment | ✅ Done |
+| 2 | Room Baseblock - Backend API | ✅ Done |
+| 3 | Frontend - Room UI pages & components | 🔲 Next |
+| 4 | Polling - Real-time room updates | 🔲 Pending |
+| 5 | Polish - Error handling, UX, responsive | 🔲 Pending |
+| 6 | Admin Dashboard - Room management (optional) | 🔲 Pending |
+
 ### Architecture
 
 ```

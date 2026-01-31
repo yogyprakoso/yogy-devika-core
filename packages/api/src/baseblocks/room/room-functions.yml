@@ -1,0 +1,37 @@
+ApiRoom:
+  handler: src/baseblocks/room/room-api.handler
+  events:
+    - http:
+        path: /rooms/{any+}
+        method: ANY
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer
+        cors:
+          origin: ${self:custom.apiCorsOrigin}
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+          allowCredentials: false
+    - http:
+        path: /rooms
+        method: ANY
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer
+        cors:
+          origin: ${self:custom.apiCorsOrigin}
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+          allowCredentials: false

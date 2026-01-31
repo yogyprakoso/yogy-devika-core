@@ -24,21 +24,46 @@ fi
 # Create admin table
 TABLE_NAME="${APP_NAME}-local-admin"
 echo "Creating table: $TABLE_NAME"
-
 aws dynamodb create-table \
     --endpoint-url "$ENDPOINT" \
     --table-name "$TABLE_NAME" \
     --attribute-definitions AttributeName=userSub,AttributeType=S \
     --key-schema AttributeName=userSub,KeyType=HASH \
     --billing-mode PAY_PER_REQUEST \
-    --no-cli-pager 2>/dev/null || echo "  Table already exists or error occurred"
+    --no-cli-pager 2>/dev/null || echo "  Table already exists"
+
+# Create room table
+TABLE_NAME="${APP_NAME}-local-room"
+echo "Creating table: $TABLE_NAME"
+aws dynamodb create-table \
+    --endpoint-url "$ENDPOINT" \
+    --table-name "$TABLE_NAME" \
+    --attribute-definitions AttributeName=roomCode,AttributeType=S \
+    --key-schema AttributeName=roomCode,KeyType=HASH \
+    --billing-mode PAY_PER_REQUEST \
+    --no-cli-pager 2>/dev/null || echo "  Table already exists"
+
+# Create participant table (composite key)
+TABLE_NAME="${APP_NAME}-local-participant"
+echo "Creating table: $TABLE_NAME"
+aws dynamodb create-table \
+    --endpoint-url "$ENDPOINT" \
+    --table-name "$TABLE_NAME" \
+    --attribute-definitions \
+        AttributeName=roomCode,AttributeType=S \
+        AttributeName=odv,AttributeType=S \
+    --key-schema \
+        AttributeName=roomCode,KeyType=HASH \
+        AttributeName=odv,KeyType=RANGE \
+    --billing-mode PAY_PER_REQUEST \
+    --no-cli-pager 2>/dev/null || echo "  Table already exists"
 
 # Seed local admin user
 echo ""
 echo "Seeding admin user..."
 aws dynamodb put-item \
     --endpoint-url "$ENDPOINT" \
-    --table-name "$TABLE_NAME" \
+    --table-name "${APP_NAME}-local-admin" \
     --item '{"userSub": {"S": "local-dev-user-'$(whoami)'"}, "userEmail": {"S": "local@dev.com"}}' \
     --no-cli-pager 2>/dev/null
 

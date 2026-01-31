@@ -41,7 +41,10 @@ app.use((req: any, _res, next) => {
 // Import and mount routes
 // Note: We import the route handlers, not the Lambda handlers
 import { adminRoutes } from './baseblocks/admin/admin-routes';
+import { roomRoutes } from './baseblocks/room/room-routes';
+
 app.use('/local/admin', adminRoutes);
+app.use('/local/rooms', roomRoutes);
 
 // Health check
 app.get('/local/health', (_req, res) => {

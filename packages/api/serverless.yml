@@ -96,6 +96,10 @@ provider:
           Resource:
             - !Sub ${adminTable.Arn}
             - !Sub ${adminTable.Arn}/index/*
+            - !Sub ${roomTable.Arn}
+            - !Sub ${roomTable.Arn}/index/*
+            - !Sub ${participantTable.Arn}
+            - !Sub ${participantTable.Arn}/index/*
         - Effect: Allow
           Action:
             - cognito-idp:AdminCreateUser
@@ -107,6 +111,8 @@ provider:
 resources:
   - ${file(./src/baseblocks/cognito/cognito-resources.yml)}
   - ${file(./src/baseblocks/admin/admin-dynamodb.yml)}
+  - ${file(./src/baseblocks/room/room-dynamodb.yml)}
 
 functions:
   - ${file(./src/baseblocks/admin/admin-functions.yml)}
+  - ${file(./src/baseblocks/room/room-functions.yml)}
