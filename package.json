@@ -43,7 +43,11 @@
     "start:api": "pnpm --filter @baseline/api run start",
     "start:admin": "pnpm --filter @baseline/admin run start",
     "start:web": "pnpm --filter @baseline/web run start",
-    "install:requirements": "./scripts/install-requirements.sh"
+    "install:requirements": "./scripts/install-requirements.sh",
+    "start:local:api": "pnpm --filter @baseline/api run start:local",
+    "db:start": "pnpm --filter @baseline/api run db:start",
+    "db:stop": "pnpm --filter @baseline/api run db:stop",
+    "db:setup": "pnpm --filter @baseline/api run db:setup"
   },
   "devDependencies": {
     "@eslint/js": "9.17.0",

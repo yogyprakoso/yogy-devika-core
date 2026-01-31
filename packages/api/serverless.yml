@@ -4,9 +4,10 @@ frameworkVersion: '>=2.0.0 <4.0.0'
 
 plugins:
   - serverless-esbuild
-  # Plugins below are for LOCAL DEVELOPMENT only (not needed for AWS deploy)
-  # - serverless-dynamodb  # Disabled - use Docker instead: docker run -p 8000:8000 amazon/dynamodb-local
-  # - serverless-offline   # Disabled - frontend uses staging API directly
+  # Local dev plugins disabled due to pnpm + Serverless v3 compatibility issue
+  # See "Known Issues" section below for details
+  # - serverless-dynamodb
+  # - serverless-offline
 
 custom:
   apiCorsOrigin: '*'

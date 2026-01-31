@@ -6,6 +6,10 @@
     "node": "20"
   },
   "scripts": {
+    "start:local": "./scripts/start-local-express.sh",
+    "db:start": "docker compose up -d",
+    "db:stop": "docker compose down",
+    "db:setup": "./scripts/setup-local-db.sh",
     "start:exposed": "pnpm run start --host 0.0.0.0",
     "start": "./scripts/run-api-local.sh",
     "debug": "export SLS_DEBUG=* && ./scripts/run-api-local-debug.sh",
@@ -48,6 +52,7 @@
     "serverless-offline": "13.8.2",
     "stylelint": "16.13.2",
     "stylelint-order": "6.0.4",
+    "tsx": "^4.21.0",
     "typescript": "5.4.2"
   }
 }

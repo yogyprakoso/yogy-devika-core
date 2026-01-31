@@ -4,38 +4,93 @@ A real-time planning poker application built with Baseline Core to demonstrate f
 
 ## Quick Start
 
-**Prerequisites:** Java 17+, AWS CLI, AWS Account
+**Prerequisites:** Node 20+, pnpm 9+, AWS CLI, AWS Account
+
+### First Time Setup
 
 ```bash
-# First time setup
 pnpm install
 pnpm run deploy:staging          # Deploy to AWS (creates Cognito, DynamoDB, etc.)
 pnpm run add:user:staging        # Create admin user
 pnpm run generate:env:local      # Generate .env files from deployed stack
-
-# Run locally (3 terminals)
-pnpm run start:api               # Terminal 1 - API at localhost:4000
-pnpm run start:web               # Terminal 2 - Web at localhost:5173
-pnpm run start:admin             # Terminal 3 - Admin at localhost:5174
 ```
 
-> **Note:** Local development uses deployed AWS Cognito for authentication.
-> For local DynamoDB, use Docker (see Known Issues below).
+### Option A: Use AWS Staging (Recommended)
+
+```bash
+# Terminal 1 - Web frontend
+pnpm run start:web               # http://localhost:5173
+
+# Terminal 2 - Admin frontend
+pnpm run start:admin             # http://localhost:5174
+```
+
+Frontend connects to AWS staging API. Simple and reliable.
+
+### Option B: Full Local Development
+
+For API changes without deploying to AWS:
+
+```bash
+# Terminal 1 - Start DynamoDB (Docker)
+pnpm run db:start                # http://localhost:8000
+pnpm run db:setup                # Create tables (first time only)
+
+# Terminal 2 - Local API (Express)
+pnpm run start:local:api         # http://localhost:4000/local/
+
+# Terminal 3 - Web frontend
+pnpm run start:web               # http://localhost:5173
+```
+
+Then update `packages/web/.env.development`:
+```
+REACT_APP_API_URL=http://localhost:4000/local/
+```
+
+> **Note:** Local API uses mock authentication. Cognito features won't work locally.
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  LOCAL                         │  AWS STAGING           │
+├────────────────────────────────┼────────────────────────┤
+│  Web (Vite :5173)    ──────────────►  API Gateway       │
+│  Admin (Vite :5174)  ──────────────►  Lambda            │
+│                                │      DynamoDB          │
+│                                │      Cognito           │
+└────────────────────────────────┴────────────────────────┘
+```
+
+### Quick Reference
+
+| Command | Description |
+|---------|-------------|
+| `pnpm run start:web` | Start web frontend |
+| `pnpm run start:admin` | Start admin frontend |
+| `pnpm run start:local:api` | Start local API (Express) |
+| `pnpm run db:start` | Start local DynamoDB (Docker) |
+| `pnpm run db:stop` | Stop local DynamoDB |
+| `pnpm run deploy:staging` | Deploy API to AWS |
+| `pnpm run generate:env:local` | Regenerate .env files |
 
 ## Known Issues
 
-### serverless-dynamodb Plugin Compatibility
+### serverless-offline Plugin Incompatibility (pnpm + Serverless v3)
 
-**Issue:** The `serverless-dynamodb` plugin (v0.2.50) has a compatibility issue with Serverless Framework v3 + pnpm, causing `TypeError: Cannot redefine property: _serverlessExternalPluginName`.
+**Issue:** The `serverless-offline` plugin has compatibility issues with pnpm's node_modules structure.
 
-**Impact:** Local DynamoDB via the plugin doesn't work.
-
-**Workaround:** For local development, use Docker:
-```bash
-docker run -p 8000:8000 amazon/dynamodb-local
+**Error:**
+```
+TypeError: Cannot redefine property: _serverlessExternalPluginName
 ```
 
-**Note:** This does NOT affect AWS deployment - DynamoDB tables are created via CloudFormation, not the plugin.
+**Root Cause:** pnpm uses content-addressable storage with symlinks, while Serverless plugins expect npm's flat node_modules structure.
+
+**Workaround:** We created a local Express server (`src/local-server.ts`) that runs the API directly without serverless-offline. Use `pnpm run start:local:api` for local development.
+
+**Impact:** This does NOT affect AWS deployment - only local development tooling.
 
 ## Tech Stack
 
@@ -255,7 +310,7 @@ Before any code is considered complete:
 
 ## Development Workflow
 
-1. **Develop** - `pnpm run start:api` + `pnpm run start:web`
+1. **Develop** - `pnpm run start:web` + `pnpm run start:admin` (connects to AWS staging)
 2. **Lint** - `pnpm run lint`
 3. **Build** - `pnpm run build`
 4. **Deploy** - `pnpm run deploy:staging`
