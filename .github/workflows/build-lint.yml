@@ -41,7 +41,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: arn:aws:iam::123456789123:role/GitHub-Deploy
+          role-to-assume: arn:aws:iam::605241368830:role/GitHub-Deploy-ScrumPoker
           output-credentials: true
       - name: AWS Configure
         id: aws-configure
