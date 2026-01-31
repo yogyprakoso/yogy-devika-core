@@ -11,9 +11,40 @@ A real-time planning poker application built with Baseline Core to demonstrate f
 ```bash
 pnpm install
 pnpm run deploy:staging          # Deploy to AWS (creates Cognito, DynamoDB, etc.)
-pnpm run add:user:staging        # Create admin user
+pnpm run add:user:staging        # Create admin user (prompts for email/password)
 pnpm run generate:env:local      # Generate .env files from deployed stack
 ```
+
+### Admin Access
+
+Admin dashboard requires users to be in the DynamoDB admin table.
+
+**For Staging/Production:**
+```bash
+pnpm run add:user:staging        # Interactive: creates Cognito user + adds to admin table
+```
+
+**For Local Development:**
+```bash
+# 1. Start local DynamoDB first
+pnpm run db:start
+
+# 2. Get your Cognito userSub (after signing up on web app)
+aws cognito-idp admin-get-user \
+  --user-pool-id ap-southeast-2_KHyWzjPmY \
+  --username your@email.com \
+  --profile yogyprakoso \
+  --region ap-southeast-2 \
+  --query 'Username' --output text
+
+# 3. Add to local admin table
+aws dynamodb put-item \
+  --endpoint-url http://localhost:8000 \
+  --table-name scrum-poker-local-admin \
+  --item '{"userSub": {"S": "YOUR_USER_SUB"}, "userEmail": {"S": "your@email.com"}}'
+```
+
+**Note:** Local admin app uses local DynamoDB (localhost:8000), not AWS. Users must be added to `scrum-poker-local-admin` table for local access.
 
 ### Option A: Use AWS Staging (Recommended)
 
