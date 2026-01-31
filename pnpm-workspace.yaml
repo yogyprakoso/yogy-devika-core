@@ -1,5 +1,10 @@
 packages:
-  # all packages in direct subdirs of packages/
-  - 'packages/*'
-  - 'shared/*'
-  - 'commands/*'
+  - packages/*
+  - shared/*
+  - commands/*
+
+onlyBuiltDependencies:
+  - aws-sdk
+  - es5-ext
+  - esbuild
+  - serverless

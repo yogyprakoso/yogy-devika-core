@@ -64,3 +64,6 @@ tsconfig.tsbuildinfo
 
 # logs
 *.log
+
+# private AI context
+.claude/
