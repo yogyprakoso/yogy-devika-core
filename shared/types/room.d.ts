@@ -21,6 +21,7 @@ export interface RoomState {
   revealed: boolean;
   isHost: boolean;
   isParticipant: boolean;
+  myOdv: string;
   myVote: number | string | null;
   participants: ParticipantView[];
   stats?: VoteStats;

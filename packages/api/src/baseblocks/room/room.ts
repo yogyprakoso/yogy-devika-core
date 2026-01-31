@@ -33,6 +33,7 @@ export const RoomStateMapper = (
     revealed: room.revealed,
     isHost,
     isParticipant,
+    myOdv: currentUserSub,
     myVote: currentParticipant?.vote ?? null,
     participants: participantViews,
   };

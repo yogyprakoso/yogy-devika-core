@@ -26,6 +26,8 @@ const Room = (): JSX.Element => {
   const [isEditingTopic, setIsEditingTopic] = useState(false);
   const [copyFeedback, setCopyFeedback] = useState(false);
   const [notInRoom, setNotInRoom] = useState(false);
+  const [isRevealing, setIsRevealing] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
   });
@@ -54,6 +56,14 @@ const Room = (): JSX.Element => {
       setRoom(data);
       setError('');
       setNotInRoom(false);
+
+      // Reset revealing state when room is actually revealed
+      if (data.revealed) {
+        setIsRevealing(false);
+      } else {
+        // Reset resetting state when room is actually reset
+        setIsResetting(false);
+      }
 
       // Update selected vote from server state
       if (data.myVote !== null && data.myVote !== undefined) {
@@ -84,13 +94,36 @@ const Room = (): JSX.Element => {
   const handleVote = async (value: VoteValue) => {
     if (!roomCode || room?.revealed) return;
 
+    const previousVote = selectedVote;
     setSelectedVote(value);
+
+    // Optimistic update: immediately show checkmark for current user
+    if (room) {
+      setRoom({
+        ...room,
+        myVote: value,
+        participants: room.participants.map(p =>
+          p.odv === room.myOdv ? { ...p, hasVoted: true, vote: value } : p
+        ),
+      });
+    }
+
     try {
       const requestHandler = getRequestHandler();
       await submitVote(requestHandler, roomCode, { vote: value });
     } catch (err) {
       console.error('Failed to vote:', err);
-      setSelectedVote(null);
+      // Rollback on error
+      setSelectedVote(previousVote);
+      if (room) {
+        setRoom({
+          ...room,
+          myVote: previousVote,
+          participants: room.participants.map(p =>
+            p.odv === room.myOdv ? { ...p, hasVoted: previousVote !== null, vote: previousVote } : p
+          ),
+        });
+      }
     }
   };
 
@@ -109,24 +142,42 @@ const Room = (): JSX.Element => {
   const handleReveal = async () => {
     if (!roomCode || !room?.isHost) return;
 
+    // Check if everyone has voted
+    const votedCount = room.participants.filter(p => p.hasVoted).length;
+    const totalCount = room.participants.length;
+
+    if (votedCount < totalCount) {
+      const notVoted = totalCount - votedCount;
+      const confirmed = window.confirm(
+        `${notVoted} participant${notVoted > 1 ? 's have' : ' has'} not voted yet.\n\nReveal votes anyway?`
+      );
+      if (!confirmed) return;
+    }
+
+    setIsRevealing(true);
     try {
       const requestHandler = getRequestHandler();
       await revealVotes(requestHandler, roomCode);
+      // Don't set isRevealing to false here - let it stay true until room.revealed becomes true
     } catch (err) {
       console.error('Failed to reveal:', err);
+      setIsRevealing(false); // Only reset on error
     }
   };
 
   const handleReset = async () => {
     if (!roomCode || !room?.isHost) return;
 
+    setIsResetting(true);
     try {
       const requestHandler = getRequestHandler();
       await resetRoom(requestHandler, roomCode);
       setSelectedVote(null);
       setTopicInput('');
+      // Don't set isResetting to false here - let it stay true until room.revealed becomes false
     } catch (err) {
       console.error('Failed to reset:', err);
+      setIsResetting(false); // Only reset on error
     }
   };
 
@@ -307,17 +358,21 @@ const Room = (): JSX.Element => {
               <button
                 onClick={handleReveal}
                 className={styles.revealBtn}
+                disabled={isRevealing}
                 aria-label="Reveal all votes"
+                aria-busy={isRevealing}
               >
-                Reveal Votes
+                {isRevealing ? 'Revealing...' : 'Reveal Votes'}
               </button>
             ) : (
               <button
                 onClick={handleReset}
                 className={styles.resetBtn}
+                disabled={isResetting}
                 aria-label="Reset votes and start next round"
+                aria-busy={isResetting}
               >
-                Next Round
+                {isResetting ? 'Preparing...' : 'Next Round'}
               </button>
             )}
           </section>
