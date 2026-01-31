@@ -5,10 +5,17 @@
  * Usage: pnpm run start:local (from packages/api)
  */
 
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import compression from 'compression';
 import cors from 'cors';
 import { logRoute } from './middleware/log-route';
+import { RequestContext } from './util/request-context.type';
+
+// JWT payload structure from Cognito
+interface JwtPayload {
+  sub?: string;
+  email?: string;
+}
 
 // Create Express app
 const app = express();
@@ -25,7 +32,7 @@ app.use(logRoute);
 // Authentication middleware for local development
 // Extracts user info from Cognito JWT token, or falls back to mock user
 const FALLBACK_USER_SUB = process.env.LOCAL_USER_SUB || 'local-dev-user';
-app.use((req: any, _res, next) => {
+app.use((req: Request, _res: Response, next: NextFunction) => {
   let userSub = FALLBACK_USER_SUB;
   let userEmail = 'local@dev.com';
 
@@ -36,21 +43,21 @@ app.use((req: any, _res, next) => {
       const token = authHeader.substring(7);
       // Decode JWT payload (base64) - we don't verify signature locally
       const payloadBase64 = token.split('.')[1];
-      const payload = JSON.parse(Buffer.from(payloadBase64, 'base64').toString());
+      const payload = JSON.parse(Buffer.from(payloadBase64, 'base64').toString()) as JwtPayload;
       if (payload.sub) {
         userSub = payload.sub;
         userEmail = payload.email || 'unknown@local.dev';
         console.log(`[Auth] User: ${userEmail} (${userSub.substring(0, 8)}...)`);
       }
-    } catch (e) {
+    } catch {
       console.log('[Auth] Failed to parse JWT, using fallback user');
     }
   } else {
     console.log('[Auth] No token, using fallback user');
   }
 
-  req.currentUserSub = userSub;
-  req.context = {
+  (req as RequestContext).currentUserSub = userSub;
+  (req as RequestContext).context = {
     authorizer: {
       claims: {
         sub: userSub,

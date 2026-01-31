@@ -101,7 +101,7 @@
     }
 
     &:last-child {
-      border-bottom: none;
+      border-bottom: 0;
     }
 
     @media screen and (max-width: global.$md) {

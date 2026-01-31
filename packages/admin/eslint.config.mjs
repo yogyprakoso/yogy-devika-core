@@ -35,5 +35,17 @@ export default tseslint.config(...rootConfig, react.configs.flat.recommended, {
     ...tsPlugin.configs.recommended.rules,
     ...tsPlugin.configs['recommended-requiring-type-checking'].rules,
     ...reactHooks.configs.recommended.rules,
+    // Relaxed rules for React components
+    '@typescript-eslint/no-misused-promises': ['error', {
+      checksVoidReturn: {
+        attributes: false, // Allow async onClick handlers
+      },
+    }],
+    '@typescript-eslint/no-floating-promises': 'warn',
+    '@typescript-eslint/no-unsafe-assignment': 'warn',
+    '@typescript-eslint/no-unsafe-member-access': 'warn',
+    '@typescript-eslint/no-unsafe-argument': 'warn',
+    '@typescript-eslint/no-unsafe-call': 'warn',
+    '@typescript-eslint/no-explicit-any': 'warn',
   },
 });

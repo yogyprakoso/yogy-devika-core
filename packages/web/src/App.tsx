@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Amplify } from 'aws-amplify';
-import { fetchAuthSession, signOut } from 'aws-amplify/auth';
+import { fetchAuthSession } from 'aws-amplify/auth';
 import { Hub } from 'aws-amplify/utils';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
@@ -61,7 +61,7 @@ const App = () => {
       }
     };
 
-    checkAuth();
+    void checkAuth();
 
     return Hub.listen('auth', (data) => {
       if (data.payload.event === 'signedIn') {

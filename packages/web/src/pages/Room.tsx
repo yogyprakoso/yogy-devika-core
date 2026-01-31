@@ -76,8 +76,8 @@ const Room = (): JSX.Element => {
 
   // Initial fetch and polling
   useEffect(() => {
-    fetchRoom();
-    const interval = setInterval(fetchRoom, POLL_INTERVAL);
+    void fetchRoom();
+    const interval = setInterval(() => void fetchRoom(), POLL_INTERVAL);
     return () => clearInterval(interval);
   }, [fetchRoom]);
 
@@ -145,7 +145,7 @@ const Room = (): JSX.Element => {
 
   const copyRoomCode = () => {
     if (roomCode) {
-      navigator.clipboard.writeText(roomCode);
+      void navigator.clipboard.writeText(roomCode);
       setCopyFeedback(true);
       setTimeout(() => setCopyFeedback(false), 2000);
     }

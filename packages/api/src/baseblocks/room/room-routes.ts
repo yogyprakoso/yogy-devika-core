@@ -18,24 +18,32 @@ export const roomRoutes = Router();
 // Valid vote values
 const VALID_VOTES: VoteValue[] = [1, 2, 3, 5, 8, 13, 21, '?'];
 
+// Request body type
+interface CreateRoomBody {
+  displayName?: string;
+}
+
 /**
  * POST /rooms - Create a new room
  */
-roomRoutes.post('/', async (req: RequestContext, res: Response) => {
-  try {
-    const hostId = req.currentUserSub;
-    const room = await createRoom(hostId);
+roomRoutes.post('/', (req: RequestContext, res: Response): void => {
+  void (async () => {
+    try {
+      const hostId = req.currentUserSub;
+      const room = await createRoom(hostId);
 
-    // Auto-join host as participant
-    const displayName = req.body.displayName || 'Host';
-    await participantService.join(room.roomCode, hostId, displayName);
+      // Auto-join host as participant
+      const body = req.body as CreateRoomBody;
+      const displayName = body.displayName || 'Host';
+      await participantService.join(room.roomCode, hostId, displayName);
 
-    res.status(201).json({ roomCode: room.roomCode });
-  } catch (error) {
-    const message = getErrorMessage(error);
-    console.error(`Failed to create room: ${message}`);
-    res.status(500).json({ error: 'Failed to create room' });
-  }
+      res.status(201).json({ roomCode: room.roomCode });
+    } catch (error) {
+      const message = getErrorMessage(error);
+      console.error(`Failed to create room: ${message}`);
+      res.status(500).json({ error: 'Failed to create room' });
+    }
+  })();
 });
 
 /**

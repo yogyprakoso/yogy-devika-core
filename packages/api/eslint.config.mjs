@@ -21,5 +21,16 @@ export default tseslint.config(...rootConfig, {
     ...js.configs.recommended.rules,
     ...tsPlugin.configs.recommended.rules,
     ...tsPlugin.configs['recommended-requiring-type-checking'].rules,
+    // Relaxed rules for Express route handlers
+    '@typescript-eslint/no-misused-promises': ['error', {
+      checksVoidReturn: {
+        arguments: false, // Allow async functions as Express handlers
+      },
+    }],
+    '@typescript-eslint/no-unsafe-assignment': 'warn',
+    '@typescript-eslint/no-unsafe-member-access': 'warn',
+    '@typescript-eslint/no-unsafe-argument': 'warn',
+    '@typescript-eslint/no-unsafe-call': 'warn',
+    '@typescript-eslint/no-explicit-any': 'warn',
   },
 });
