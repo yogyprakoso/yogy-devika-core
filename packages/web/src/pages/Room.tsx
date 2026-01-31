@@ -153,7 +153,7 @@ const Room = (): JSX.Element => {
 
   if (isLoading) {
     return (
-      <div className={styles.container}>
+      <div className={styles.container} role="status" aria-busy="true" aria-live="polite">
         <div className={styles.loading}>Loading room...</div>
       </div>
     );
@@ -162,7 +162,7 @@ const Room = (): JSX.Element => {
   if (error || !room) {
     return (
       <div className={styles.container}>
-        <div className={styles.error}>
+        <div className={styles.error} role="alert" aria-live="assertive">
           <h2>{notInRoom ? 'Left Room' : 'Error'}</h2>
           <p>{error || 'Room not found'}</p>
           <p className={styles.errorHint}>
@@ -178,20 +178,25 @@ const Room = (): JSX.Element => {
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
+      <header className={styles.header} role="banner">
         <div className={styles.roomInfo}>
           <h1>Room: {roomCode}</h1>
-          <button onClick={copyRoomCode} className={styles.copyBtn} title="Copy room code">
-            {copyFeedback ? 'Copied!' : 'Copy'}
+          <button
+            onClick={copyRoomCode}
+            className={styles.copyBtn}
+            aria-label={copyFeedback ? 'Room code copied' : 'Copy room code to clipboard'}
+          >
+            <span aria-live="polite">{copyFeedback ? 'Copied!' : 'Copy'}</span>
           </button>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className={styles.themeToggle}
-            title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-pressed={isDarkMode}
           >
-            {isDarkMode ? '☀️' : '🌙'}
+            <span aria-hidden="true">{isDarkMode ? '☀️' : '🌙'}</span>
           </button>
           <button onClick={handleLeave} className={styles.leaveBtn}>
             Leave Room
@@ -201,14 +206,15 @@ const Room = (): JSX.Element => {
 
       <main className={styles.main}>
         {/* Topic Section */}
-        <section className={styles.topicSection}>
+        <section className={styles.topicSection} aria-labelledby="topic-heading">
           {isEditingTopic && room.isHost ? (
-            <div className={styles.topicEdit}>
+            <div className={styles.topicEdit} role="form" aria-label="Edit topic">
               <input
                 type="text"
                 value={topicInput}
                 onChange={(e) => setTopicInput(e.target.value)}
                 placeholder="Enter topic to estimate"
+                aria-label="Topic to estimate"
                 autoFocus
               />
               <button onClick={handleSetTopic}>Save</button>
@@ -216,9 +222,12 @@ const Room = (): JSX.Element => {
             </div>
           ) : (
             <div className={styles.topicDisplay}>
-              <h2>{room.topic || 'No topic set'}</h2>
+              <h2 id="topic-heading">{room.topic || 'No topic set'}</h2>
               {room.isHost && !room.revealed && (
-                <button onClick={() => { setTopicInput(room.topic); setIsEditingTopic(true); }}>
+                <button
+                  onClick={() => { setTopicInput(room.topic); setIsEditingTopic(true); }}
+                  aria-label="Edit topic"
+                >
                   Edit
                 </button>
               )}
@@ -227,12 +236,17 @@ const Room = (): JSX.Element => {
         </section>
 
         {/* Participants Section */}
-        <section className={styles.participants}>
-          <h3>Participants ({room.participants.length})</h3>
-          <div className={styles.participantGrid}>
+        <section className={styles.participants} aria-labelledby="participants-heading">
+          <h3 id="participants-heading">Participants ({room.participants.length})</h3>
+          <div className={styles.participantGrid} role="list" aria-live="polite">
             {room.participants.map((p) => (
-              <div key={p.odv} className={styles.participantCard}>
-                <div className={styles.voteIndicator}>
+              <div
+                key={p.odv}
+                className={styles.participantCard}
+                role="listitem"
+                aria-label={`${p.displayName}: ${room.revealed ? `voted ${p.vote ?? 'unknown'}` : p.hasVoted ? 'has voted' : 'waiting to vote'}`}
+              >
+                <div className={styles.voteIndicator} aria-hidden="true">
                   <div className={`${styles.cardInner} ${room.revealed ? styles.revealed : ''}`}>
                     <div className={`${styles.cardFront} ${p.hasVoted ? styles.voted : ''}`}>
                       {p.hasVoted ? (
@@ -254,28 +268,30 @@ const Room = (): JSX.Element => {
 
         {/* Stats Section (after reveal) */}
         {room.revealed && room.stats && (
-          <section className={styles.stats}>
+          <section className={styles.stats} aria-label="Vote statistics" aria-live="polite">
             <div className={styles.statItem}>
-              <span className={styles.statLabel}>Average</span>
-              <span className={styles.statValue}>{room.stats.average}</span>
+              <span className={styles.statLabel} id="stat-average">Average</span>
+              <span className={styles.statValue} aria-labelledby="stat-average">{room.stats.average}</span>
             </div>
             <div className={styles.statItem}>
-              <span className={styles.statLabel}>Most Common</span>
-              <span className={styles.statValue}>{room.stats.mode}</span>
+              <span className={styles.statLabel} id="stat-mode">Most Common</span>
+              <span className={styles.statValue} aria-labelledby="stat-mode">{room.stats.mode}</span>
             </div>
           </section>
         )}
 
         {/* Voting Section */}
         {!room.revealed && (
-          <section className={styles.voting}>
-            <h3>Your Vote</h3>
-            <div className={styles.voteCards}>
+          <section className={styles.voting} aria-labelledby="voting-heading">
+            <h3 id="voting-heading">Your Vote</h3>
+            <div className={styles.voteCards} role="group" aria-label="Vote options">
               {VOTE_VALUES.map((value) => (
                 <button
                   key={value}
                   className={`${styles.voteCard} ${selectedVote === value ? styles.selected : ''}`}
                   onClick={() => handleVote(value)}
+                  aria-pressed={selectedVote === value}
+                  aria-label={`Vote ${value === '?' ? 'unsure' : value} points`}
                 >
                   {value}
                 </button>
@@ -286,13 +302,21 @@ const Room = (): JSX.Element => {
 
         {/* Host Controls */}
         {room.isHost && (
-          <section className={styles.hostControls}>
+          <section className={styles.hostControls} aria-label="Host controls">
             {!room.revealed ? (
-              <button onClick={handleReveal} className={styles.revealBtn}>
+              <button
+                onClick={handleReveal}
+                className={styles.revealBtn}
+                aria-label="Reveal all votes"
+              >
                 Reveal Votes
               </button>
             ) : (
-              <button onClick={handleReset} className={styles.resetBtn}>
+              <button
+                onClick={handleReset}
+                className={styles.resetBtn}
+                aria-label="Reset votes and start next round"
+              >
                 Next Round
               </button>
             )}

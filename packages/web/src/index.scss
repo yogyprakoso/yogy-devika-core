@@ -95,3 +95,31 @@ code {
     color: var(--text-secondary);
   }
 }
+
+// Mobile responsive - global
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 1rem;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    p {
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  .loading-container p {
+    font-size: 1rem;
+  }
+}
+
+// Amplify Authenticator mobile fixes
+@media (max-width: 480px) {
+  [data-amplify-authenticator] {
+    --amplify-components-authenticator-container-width-max: 100%;
+    padding: 0 0.5rem;
+  }
+}

@@ -56,10 +56,24 @@ REACT_APP_API_URL=http://localhost:4000/local/
 |-------|-------------|--------|
 | 1 | Project Setup - Local dev environment | ✅ Done |
 | 2 | Room Baseblock - Backend API | ✅ Done |
-| 3 | Frontend - Room UI pages & components | 🔲 Next |
-| 4 | Polling - Real-time room updates | 🔲 Pending |
-| 5 | Polish - Error handling, UX, responsive | 🔲 Pending |
-| 6 | Admin Dashboard - Room management (optional) | 🔲 Pending |
+| 3 | Frontend - Room UI pages & components | ✅ Done |
+| 4 | Polling - Real-time room updates | ✅ Done |
+| 5 | Polish - Error handling, UX, animations, dark mode | ✅ Done |
+| 6 | Admin Dashboard - Room management (optional) | 🔲 Future |
+
+### Features Implemented
+
+- User authentication with AWS Cognito (Amplify Authenticator)
+- Create/join rooms with unique 6-character codes
+- Real-time voting with planning poker cards (1, 2, 3, 5, 8, 13, 21, ?)
+- Vote reveal with card flip animation
+- Statistics (average, mode) after reveal
+- Host-only controls (set topic, reveal, reset)
+- Dark mode with CSS custom properties
+- Copy room code with feedback
+- Leave room detection from other sessions
+- Mobile responsive design (iPhone SE and up)
+- ARIA accessibility attributes for screen readers
 
 ### Architecture
 
@@ -172,7 +186,52 @@ yogy-devika-core/
 
 ---
 
-### ADR-003: User Authentication Required
+### ADR-003: Amplify Authenticator for Auth UI
+
+**Status:** Accepted
+
+**Context:** Need login/signup UI for Cognito authentication.
+
+**Options Considered:**
+- Custom auth forms with Amplify Auth API - Full UX control, more code
+- Amplify Authenticator component - Pre-built UI, less control
+
+**Decision:** Use `@aws-amplify/ui-react` Authenticator component
+
+**Rationale:**
+- Follows existing Baseline Core pattern (admin app uses same approach)
+- Handles all auth flows out of the box (sign in, sign up, forgot password, MFA)
+- Official AWS library with Cognito integration
+- Fast to implement for MVP
+
+**Trade-offs:**
+- Less control over UX (e.g., no "back" button on verification page)
+- Default styling may not match custom design
+
+---
+
+### ADR-004: CSS Custom Properties for Dark Mode
+
+**Status:** Accepted
+
+**Context:** User requested dark mode support.
+
+**Options Considered:**
+- CSS-in-JS (styled-components) - Runtime theme switching, JS overhead
+- CSS custom properties - Pure CSS, zero JS for colors
+- Separate CSS files - No transitions, harder to maintain
+
+**Decision:** CSS custom properties with `data-theme` attribute
+
+**Rationale:**
+- Zero JavaScript for color switching (pure CSS)
+- Smooth transitions with CSS transition property
+- Theme persists via localStorage
+- Works with existing SCSS setup
+
+---
+
+### ADR-005: User Authentication Required
 
 **Status:** Accepted
 

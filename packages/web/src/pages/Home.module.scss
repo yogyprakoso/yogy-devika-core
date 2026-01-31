@@ -217,3 +217,78 @@
     border-color: var(--accent-color, #4a90d9);
   }
 }
+
+// Mobile responsive
+@media (max-width: 480px) {
+  .header {
+    padding: 0.75rem 1rem;
+
+    h1 {
+      font-size: 1.125rem;
+    }
+  }
+
+  .headerActions {
+    gap: 0.375rem;
+  }
+
+  .themeToggle {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .signOutBtn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .main {
+    padding: 1.5rem 1rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    > p {
+      font-size: 0.875rem;
+    }
+  }
+
+  .inputGroup {
+    margin-bottom: 1rem;
+
+    label {
+      font-size: 0.875rem;
+    }
+
+    input {
+      padding: 0.625rem;
+      font-size: 0.9375rem;
+    }
+  }
+
+  .section h3 {
+    font-size: 0.875rem;
+  }
+
+  .primaryBtn,
+  .secondaryBtn {
+    padding: 0.625rem;
+    font-size: 0.9375rem;
+  }
+
+  .codeInput {
+    padding: 0.625rem;
+    font-size: 1.125rem;
+    letter-spacing: 0.2rem;
+  }
+
+  .error {
+    font-size: 0.8125rem;
+    padding: 0.375rem;
+  }
+}

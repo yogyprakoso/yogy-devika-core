@@ -77,15 +77,16 @@ const Home = (): JSX.Element => {
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
+      <header className={styles.header} role="banner">
         <h1>Scrum Poker</h1>
         <div className={styles.headerActions}>
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className={styles.themeToggle}
-            title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-pressed={isDarkMode}
           >
-            {isDarkMode ? '☀️' : '🌙'}
+            <span aria-hidden="true">{isDarkMode ? '☀️' : '🌙'}</span>
           </button>
           <button onClick={handleSignOut} className={styles.signOutBtn}>
             Sign Out
@@ -93,7 +94,7 @@ const Home = (): JSX.Element => {
         </div>
       </header>
 
-      <main className={styles.main}>
+      <main className={styles.main} role="main">
         <div className={styles.card}>
           <h2>Welcome!</h2>
           <p>Create a new room or join an existing one.</p>
@@ -107,29 +108,36 @@ const Home = (): JSX.Element => {
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Enter your name"
               maxLength={20}
+              aria-required="true"
+              aria-describedby={error ? 'error-message' : undefined}
             />
           </div>
 
-          {error && <p className={styles.error}>{error}</p>}
+          {error && (
+            <p id="error-message" className={styles.error} role="alert" aria-live="assertive">
+              {error}
+            </p>
+          )}
 
           <div className={styles.actions}>
-            <div className={styles.section}>
-              <h3>Create a Room</h3>
+            <section className={styles.section} aria-labelledby="create-heading">
+              <h3 id="create-heading">Create a Room</h3>
               <button
                 onClick={handleCreateRoom}
                 disabled={isLoading}
                 className={styles.primaryBtn}
+                aria-busy={isLoading}
               >
                 {isLoading ? 'Creating...' : 'Create Room'}
               </button>
-            </div>
+            </section>
 
-            <div className={styles.divider}>
+            <div className={styles.divider} aria-hidden="true">
               <span>or</span>
             </div>
 
-            <div className={styles.section}>
-              <h3>Join a Room</h3>
+            <section className={styles.section} aria-labelledby="join-heading">
+              <h3 id="join-heading">Join a Room</h3>
               <input
                 type="text"
                 value={joinCode}
@@ -137,15 +145,18 @@ const Home = (): JSX.Element => {
                 placeholder="Enter room code"
                 maxLength={6}
                 className={styles.codeInput}
+                aria-label="Room code"
+                aria-describedby={error ? 'error-message' : undefined}
               />
               <button
                 onClick={handleJoinRoom}
                 disabled={isLoading}
                 className={styles.secondaryBtn}
+                aria-busy={isLoading}
               >
                 {isLoading ? 'Joining...' : 'Join Room'}
               </button>
-            </div>
+            </section>
           </div>
         </div>
       </main>
