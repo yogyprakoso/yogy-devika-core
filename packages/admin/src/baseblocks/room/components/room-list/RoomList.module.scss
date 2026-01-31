@@ -1,0 +1,192 @@
+@use '../../../../styles/global';
+
+.roomList {
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #eee;
+
+    h2 {
+      @include global.mediumFont();
+      margin: 0;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .count {
+      @include global.smallFont();
+      padding: 6px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      color: #555;
+    }
+  }
+
+  .empty {
+    padding: 64px 48px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+
+    p {
+      @include global.smallFont();
+      color: #999;
+      margin: 0;
+    }
+  }
+
+  .list {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .listHeader {
+    display: grid;
+    grid-template-columns: 100px minmax(150px, 1fr) 110px 180px 150px;
+    gap: 24px;
+    padding: 14px 24px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+
+    @include global.tinyFont();
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    @media screen and (max-width: global.$lg) {
+      display: none;
+    }
+  }
+
+  .item {
+    display: grid;
+    grid-template-columns: 100px minmax(150px, 1fr) 110px 180px 150px;
+    gap: 24px;
+    padding: 16px 24px;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background: #fafbfc;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &.expired {
+      opacity: 0.5;
+      background: #fafafa;
+
+      &:hover {
+        background: #f5f5f5;
+      }
+    }
+
+    @media screen and (max-width: global.$lg) {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 16px;
+    }
+  }
+
+  .code {
+    @include global.smallFont();
+    font-weight: 600;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+    color: #333;
+    letter-spacing: 0.5px;
+
+    @media screen and (max-width: global.$lg) {
+      font-size: 14px;
+    }
+  }
+
+  .topic {
+    @include global.smallFont();
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #555;
+
+    @media screen and (max-width: global.$lg) {
+      font-size: 14px;
+      max-width: 100%;
+    }
+  }
+
+  .participants {
+    @include global.smallFont();
+    text-align: center;
+    font-weight: 500;
+    color: #444;
+
+    @media screen and (max-width: global.$lg) {
+      text-align: left;
+      font-size: 14px;
+
+      &::before {
+        content: 'Participants: ';
+        font-weight: normal;
+        color: #888;
+      }
+    }
+  }
+
+  .created {
+    @include global.tinyFont();
+    color: #888;
+
+    @media screen and (max-width: global.$lg) {
+      &::before {
+        content: 'Created: ';
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-end;
+
+    @media screen and (max-width: global.$lg) {
+      width: 100%;
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 1px solid #f0f0f0;
+    }
+  }
+
+  .viewBtn {
+    @include global.tinyFont();
+    padding: 8px 16px;
+    background: #fff;
+    border: 1px solid #1976d2;
+    border-radius: 6px;
+    color: #1976d2;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: #1976d2;
+      color: #fff;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}

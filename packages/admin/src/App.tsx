@@ -13,6 +13,7 @@ import '@aws-amplify/ui-react/styles.css';
 import Dashboard from './baseblocks/dashboard/pages/Dashboard';
 import User, { userLoader } from './baseblocks/user/pages/User';
 import Admins, { adminListLoader } from './baseblocks/admin/pages/Admins';
+import Rooms, { roomsListLoader } from './baseblocks/room/pages/Rooms';
 import {
   createRequestHandler,
   getRequestHandler,
@@ -116,6 +117,11 @@ const router = createBrowserRouter([
     loader: protectedLoader,
     children: [
       { path: '/dashboard', Component: Dashboard },
+      {
+        path: '/rooms',
+        Component: Rooms,
+        loader: roomsListLoader,
+      },
       {
         path: '/admins',
         Component: Admins,

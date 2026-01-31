@@ -39,3 +39,24 @@ export interface VoteStats {
 }
 
 export type VoteValue = 1 | 2 | 3 | 5 | 8 | 13 | 21 | '?';
+
+// Admin dashboard views
+export interface RoomAdminView {
+  roomCode: string;
+  hostId: string;
+  topic: string;
+  revealed: boolean;
+  participantCount: number;
+  createdAt: number;
+  expiresAt: number;
+}
+
+export interface RoomAdminDetails extends RoomAdminView {
+  participants: {
+    odv: string;
+    displayName: string;
+    hasVoted: boolean;
+    vote: number | string | null;
+    joinedAt: number;
+  }[];
+}

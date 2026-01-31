@@ -33,7 +33,15 @@ const Sidebar = (): JSX.Element => {
           <span>Dashboard</span>
         </Link>
 
-        <div className={styles.spacer} />
+        <Link
+          to="/rooms"
+          className={`${styles.link} ${
+            location.pathname === '/rooms' ? styles.active : ''
+          }`}
+        >
+          <img src="/icons/users.svg" alt="Rooms" />
+          <span>Rooms</span>
+        </Link>
 
         <div className={styles.spacer} />
 

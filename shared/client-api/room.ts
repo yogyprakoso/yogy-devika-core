@@ -1,4 +1,4 @@
-import { RoomState } from '@baseline/types/room';
+import { RoomState, RoomAdminView, RoomAdminDetails } from '@baseline/types/room';
 import { RequestHandler } from './request-handler';
 
 export interface CreateRoomResponse {
@@ -136,6 +136,54 @@ export const resetRoom = async (
   const response = await requestHandler.request({
     method: 'POST',
     url: `rooms/${roomCode}/reset`,
+    hasAuthentication: true,
+  });
+  if ('data' in response) {
+    return;
+  }
+  throw response;
+};
+
+// ============================================
+// Admin Room Management APIs
+// ============================================
+
+export const getAllRoomsAdmin = async (
+  requestHandler: RequestHandler,
+): Promise<RoomAdminView[]> => {
+  const response = await requestHandler.request<RoomAdminView[]>({
+    method: 'GET',
+    url: 'admin/rooms',
+    hasAuthentication: true,
+  });
+  if ('data' in response) {
+    return response.data;
+  }
+  throw response;
+};
+
+export const getRoomDetailsAdmin = async (
+  requestHandler: RequestHandler,
+  roomCode: string,
+): Promise<RoomAdminDetails> => {
+  const response = await requestHandler.request<RoomAdminDetails>({
+    method: 'GET',
+    url: `admin/rooms/${roomCode}`,
+    hasAuthentication: true,
+  });
+  if ('data' in response) {
+    return response.data;
+  }
+  throw response;
+};
+
+export const deleteRoomAdmin = async (
+  requestHandler: RequestHandler,
+  roomCode: string,
+): Promise<void> => {
+  const response = await requestHandler.request({
+    method: 'DELETE',
+    url: `admin/rooms/${roomCode}`,
     hasAuthentication: true,
   });
   if ('data' in response) {

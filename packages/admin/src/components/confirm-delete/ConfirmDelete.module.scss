@@ -8,12 +8,30 @@
   .deleteButton {
     display: flex;
     align-items: center;
-    font: normal normal normal 15px/22px 'Montserrat', sans-serif;
-    background: unset;
-    border: unset;
+    justify-content: center;
+    font: normal normal 500 12px/20px 'Montserrat', sans-serif;
+    padding: 8px 16px;
+    background: #fff;
+    border: 1px solid #d32f2f;
+    border-radius: 6px;
+    color: #d32f2f;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: #d32f2f;
+      color: #fff;
+    }
 
     &:disabled {
-      opacity: 0.25;
+      opacity: 0.4;
+      cursor: not-allowed;
     }
+  }
+}
+
+.deleteModal {
+  .deleteButton {
+    padding: 10px 24px;
   }
 }

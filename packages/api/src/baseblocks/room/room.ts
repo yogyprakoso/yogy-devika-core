@@ -4,6 +4,7 @@ import {
   RoomState,
   ParticipantView,
   VoteStats,
+  RoomAdminView,
 } from '@baseline/types/room';
 
 /**
@@ -74,4 +75,22 @@ export const calculateVoteStats = (participants: Participant[]): VoteStats => {
   }
 
   return { average, mode };
+};
+
+/**
+ * Map Room to RoomAdminView for admin dashboard
+ */
+export const RoomAdminMapper = (
+  room: Room,
+  participantCount: number
+): RoomAdminView => {
+  return {
+    roomCode: room.roomCode,
+    hostId: room.hostId,
+    topic: room.topic,
+    revealed: room.revealed,
+    participantCount,
+    createdAt: room.createdAt,
+    expiresAt: room.expiresAt,
+  };
 };

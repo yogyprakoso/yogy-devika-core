@@ -13,6 +13,8 @@ import { RequestContext } from '../../util/request-context.type';
 import { Admin } from '@baseline/types/admin';
 import { getErrorMessage } from '../../util/error-message';
 import { adminService } from './admin.service';
+import { roomService, participantService } from '../room/room.service';
+import { RoomAdminMapper } from '../room/room';
 
 export const adminRoutes = Router();
 
@@ -148,6 +150,100 @@ adminRoutes.get('/list', [
     }
   },
 ]);
+
+// ============================================
+// Room Management Routes (Admin Only)
+// IMPORTANT: These must be BEFORE /:userId to avoid route conflicts
+// ============================================
+
+// GET /admin/rooms - List all rooms
+adminRoutes.get('/rooms', [
+  isAdmin,
+  async (_req: RequestContext, res: Response) => {
+    try {
+      const rooms = await roomService.getAll();
+      // Get participant counts for each room
+      const roomsWithCounts = await Promise.all(
+        rooms.map(async (room) => {
+          const participants = await participantService.getByRoom(room.roomCode);
+          return RoomAdminMapper(room, participants.length);
+        })
+      );
+      // Sort by createdAt desc (newest first)
+      roomsWithCounts.sort((a, b) => b.createdAt - a.createdAt);
+      res.json(roomsWithCounts);
+    } catch (error) {
+      const message = getErrorMessage(error);
+      console.error(`Failed to get rooms: ${message}`);
+      res.status(400).json({
+        error: 'Failed to get rooms',
+      });
+    }
+  },
+]);
+
+// GET /admin/rooms/:roomCode - Get room details with participants
+adminRoutes.get('/rooms/:roomCode', [
+  isAdmin,
+  async (req: RequestContext, res: Response) => {
+    try {
+      const { roomCode } = req.params;
+      const room = await roomService.get(roomCode);
+      if (!room) {
+        res.status(404).json({ error: 'Room not found' });
+        return;
+      }
+      const participants = await participantService.getByRoom(roomCode);
+      res.json({
+        ...RoomAdminMapper(room, participants.length),
+        participants: participants.map((p) => ({
+          odv: p.odv,
+          displayName: p.displayName,
+          hasVoted: p.vote !== null,
+          vote: room.revealed ? p.vote : null,
+          joinedAt: p.joinedAt,
+        })),
+      });
+    } catch (error) {
+      const message = getErrorMessage(error);
+      console.error(`Failed to get room: ${message}`);
+      res.status(400).json({
+        error: 'Failed to get room',
+      });
+    }
+  },
+]);
+
+// DELETE /admin/rooms/:roomCode - Delete a room and all participants
+adminRoutes.delete('/rooms/:roomCode', [
+  isAdmin,
+  async (req: RequestContext, res: Response) => {
+    try {
+      const { roomCode } = req.params;
+
+      // Delete all participants first
+      const participants = await participantService.getByRoom(roomCode);
+      for (const p of participants) {
+        await participantService.leave(roomCode, p.odv);
+      }
+
+      // Delete the room
+      await roomService.delete(roomCode);
+
+      res.status(200).json({ success: true });
+    } catch (error) {
+      const message = getErrorMessage(error);
+      console.error(`Failed to delete room: ${message}`);
+      res.status(400).json({
+        error: 'Failed to delete room',
+      });
+    }
+  },
+]);
+
+// ============================================
+// Admin User Routes (catch-all must be last)
+// ============================================
 
 adminRoutes.get('/:userId', [
   isAdmin,
