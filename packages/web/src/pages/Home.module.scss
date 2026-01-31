@@ -1,0 +1,219 @@
+// Use same CSS variables from Room
+.container {
+  min-height: 100vh;
+  background: var(--bg-primary, #f5f5f5);
+  transition: background 0.3s ease;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--bg-card, #fff);
+  box-shadow: 0 2px 4px var(--shadow, rgba(0, 0, 0, 0.1));
+
+  h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-primary, #333);
+  }
+}
+
+.headerActions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.themeToggle {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 4px;
+  background: var(--bg-card, #fff);
+  color: var(--text-primary, #333);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--bg-hover, #f5f5f5);
+  }
+}
+
+.signOutBtn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 4px;
+  background: var(--bg-card, #fff);
+  color: var(--text-primary, #333);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--bg-hover, #f5f5f5);
+  }
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.card {
+  background: var(--bg-card, #fff);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px var(--shadow, rgba(0, 0, 0, 0.1));
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+
+  h2 {
+    margin: 0 0 0.5rem;
+    color: var(--text-primary, #333);
+  }
+
+  > p {
+    color: var(--text-secondary, #666);
+    margin-bottom: 1.5rem;
+  }
+}
+
+.inputGroup {
+  margin-bottom: 1.5rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary, #333);
+  }
+
+  input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background: var(--bg-primary, #fff);
+    color: var(--text-primary, #333);
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent-color, #4a90d9);
+    }
+  }
+}
+
+.error {
+  color: var(--danger-color, #e53935);
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: rgba(229, 57, 53, 0.1);
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.section {
+  h3 {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+    color: #333;
+  }
+}
+
+.primaryBtn {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, var(--accent-color, #4a90d9), var(--accent-hover, #3a7bc8));
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(74, 144, 217, 0.3);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 144, 217, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.secondaryBtn {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--bg-card, #fff);
+  color: var(--accent-color, #4a90d9);
+  border: 2px solid var(--accent-color, #4a90d9);
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--bg-hover, #f0f7ff);
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 0.5rem 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color, #ddd);
+  }
+
+  span {
+    padding: 0 1rem;
+    color: var(--text-muted, #999);
+    font-size: 0.875rem;
+  }
+}
+
+.codeInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 4px;
+  font-size: 1.25rem;
+  text-align: center;
+  letter-spacing: 0.25rem;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  box-sizing: border-box;
+  background: var(--bg-primary, #fff);
+  color: var(--text-primary, #333);
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent-color, #4a90d9);
+  }
+}

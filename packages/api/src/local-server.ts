@@ -22,16 +22,39 @@ app.use(cors({ origin: '*', optionsSuccessStatus: 200 }));
 app.options('*', cors());
 app.use(logRoute);
 
-// Mock authentication for local development
-// In production, this comes from Cognito Authorizer
-const LOCAL_USER_SUB = process.env.LOCAL_USER_SUB || 'local-dev-user';
+// Authentication middleware for local development
+// Extracts user info from Cognito JWT token, or falls back to mock user
+const FALLBACK_USER_SUB = process.env.LOCAL_USER_SUB || 'local-dev-user';
 app.use((req: any, _res, next) => {
-  req.currentUserSub = LOCAL_USER_SUB;
+  let userSub = FALLBACK_USER_SUB;
+  let userEmail = 'local@dev.com';
+
+  // Try to extract real user from Authorization header (Cognito JWT)
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    try {
+      const token = authHeader.substring(7);
+      // Decode JWT payload (base64) - we don't verify signature locally
+      const payloadBase64 = token.split('.')[1];
+      const payload = JSON.parse(Buffer.from(payloadBase64, 'base64').toString());
+      if (payload.sub) {
+        userSub = payload.sub;
+        userEmail = payload.email || 'unknown@local.dev';
+        console.log(`[Auth] User: ${userEmail} (${userSub.substring(0, 8)}...)`);
+      }
+    } catch (e) {
+      console.log('[Auth] Failed to parse JWT, using fallback user');
+    }
+  } else {
+    console.log('[Auth] No token, using fallback user');
+  }
+
+  req.currentUserSub = userSub;
   req.context = {
     authorizer: {
       claims: {
-        sub: LOCAL_USER_SUB,
-        email: 'local@dev.com',
+        sub: userSub,
+        email: userEmail,
       },
     },
   };
@@ -63,7 +86,7 @@ app.listen(PORT, () => {
   console.log('  Local API Server');
   console.log('===========================================');
   console.log(`  URL:      http://localhost:${PORT}/local/`);
-  console.log(`  User:     ${LOCAL_USER_SUB}`);
+  console.log(`  User:     (from JWT or fallback: ${FALLBACK_USER_SUB})`);
   console.log(`  DynamoDB: ${process.env.DYNAMODB_ENDPOINT || 'AWS (remote)'}`);
   console.log('===========================================');
   console.log('');

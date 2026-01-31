@@ -15,6 +15,8 @@ export const RoomStateMapper = (
   currentUserSub: string
 ): RoomState => {
   const isHost = room.hostId === currentUserSub;
+  const currentParticipant = participants.find((p) => p.odv === currentUserSub);
+  const isParticipant = !!currentParticipant;
 
   const participantViews: ParticipantView[] = participants.map((p) => ({
     displayName: p.displayName,
@@ -29,6 +31,8 @@ export const RoomStateMapper = (
     topic: room.topic,
     revealed: room.revealed,
     isHost,
+    isParticipant,
+    myVote: currentParticipant?.vote ?? null,
     participants: participantViews,
   };
 

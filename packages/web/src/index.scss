@@ -1,10 +1,54 @@
+// Import Plus Jakarta Sans from Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+// Global CSS Variables for theming
+:root {
+  --bg-primary: #f5f5f5;
+  --bg-card: #fff;
+  --bg-hover: #f0f7ff;
+  --text-primary: #333;
+  --text-secondary: #666;
+  --text-muted: #999;
+  --border-color: #ddd;
+  --accent-color: #4a90d9;
+  --accent-hover: #3a7bc8;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --danger-color: #e53935;
+  --card-bg: #e0e0e0;
+  --card-voted: #c8e6c9;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+// Dark mode
+[data-theme='dark'] {
+  --bg-primary: #1a1a2e;
+  --bg-card: #16213e;
+  --bg-hover: #1f3460;
+  --text-primary: #eee;
+  --text-secondary: #aaa;
+  --text-muted: #777;
+  --border-color: #333;
+  --accent-color: #5a9fd9;
+  --accent-hover: #4a8fc9;
+  --success-color: #66bb6a;
+  --warning-color: #ffa726;
+  --danger-color: #ef5350;
+  --card-bg: #2a2a4a;
+  --card-voted: #2e5a3e;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fff;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  margin: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 code {
@@ -17,4 +61,37 @@ code {
   height: 50px;
   background: #a0a0a0;
   border-radius: 30px;
+}
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg-primary);
+
+  p {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+  }
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding: 2rem;
+
+  h1 {
+    margin: 0 0 0.5rem;
+    color: var(--text-primary);
+  }
+
+  p {
+    margin: 0 0 2rem;
+    color: var(--text-secondary);
+  }
 }

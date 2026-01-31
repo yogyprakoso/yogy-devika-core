@@ -20,6 +20,8 @@ export interface RoomState {
   topic: string;
   revealed: boolean;
   isHost: boolean;
+  isParticipant: boolean;
+  myVote: number | string | null;
   participants: ParticipantView[];
   stats?: VoteStats;
 }
