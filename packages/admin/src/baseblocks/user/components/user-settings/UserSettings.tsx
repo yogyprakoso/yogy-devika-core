@@ -43,7 +43,6 @@ const UserSettings = (props: Props): JSX.Element => {
       setIsEmailVerified(true);
       setChangingEmailCode('');
     } catch {
-      console.log('Invalid code');
       setIsCodeInvalid(true);
     }
   };

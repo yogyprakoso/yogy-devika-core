@@ -90,10 +90,11 @@ REACT_APP_API_URL=http://localhost:4000/local/
 | 3 | Frontend - Room UI pages & components | ✅ Done |
 | 4 | Polling - Real-time room updates | ✅ Done |
 | 5 | Polish - Error handling, UX, animations, dark mode | ✅ Done |
-| 6 | Admin Dashboard - Room management (optional) | 🔲 Future |
+| 6 | Admin Dashboard - Room management | ✅ Done |
 
 ### Features Implemented
 
+**Web App (User-facing):**
 - User authentication with AWS Cognito (Amplify Authenticator)
 - Create/join rooms with unique 6-character codes
 - Real-time voting with planning poker cards (1, 2, 3, 5, 8, 13, 21, ?)
@@ -105,6 +106,11 @@ REACT_APP_API_URL=http://localhost:4000/local/
 - Leave room detection from other sessions
 - Mobile responsive design (iPhone SE and up)
 - ARIA accessibility attributes for screen readers
+
+**Admin Dashboard:**
+- Room Management - view all active rooms
+- Room Details - see participants in each room
+- Delete Room - remove rooms and all participants
 
 ### Architecture
 
@@ -336,6 +342,13 @@ POST   /api/rooms/:code/topic  # Set topic (host only)
 POST   /api/rooms/:code/vote   # Submit vote
 POST   /api/rooms/:code/reveal # Reveal votes (host only)
 POST   /api/rooms/:code/reset  # Reset votes (host only)
+```
+
+### Admin Room Management
+```
+GET    /api/admin/rooms             # List all rooms (admin only)
+GET    /api/admin/rooms/:code       # Get room details with participants
+DELETE /api/admin/rooms/:code       # Delete room and participants
 ```
 
 ## Database Design

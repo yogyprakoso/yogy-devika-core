@@ -54,8 +54,8 @@ const App = () => {
             );
           }
         }
-      } catch (error) {
-        console.debug('Not authenticated');
+      } catch {
+        // Not authenticated - expected on first load
       } finally {
         setIsLoading(false);
       }

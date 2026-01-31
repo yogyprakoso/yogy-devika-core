@@ -39,7 +39,6 @@ Amplify.configure({
 export default function App() {
   useEffect(() => {
     return Hub.listen('auth', (data) => {
-      console.debug('auth event', data.payload.event);
       switch (data.payload.event) {
         case 'signedIn':
           router.navigate('/dashboard').catch((e) => console.error(e));
@@ -48,11 +47,9 @@ export default function App() {
           router.navigate('/').catch((e) => console.error(e));
           break;
         case 'signInWithRedirect_failure':
-          break;
         case 'tokenRefresh':
-          break;
         default:
-          console.debug(`Unhandled event: ${data.payload.event}`);
+          break;
       }
     });
   }, []);
@@ -66,9 +63,7 @@ export default function App() {
 }
 
 async function protectedLoader() {
-  console.debug('protected loader');
   if (!getRequestHandler()) {
-    console.debug('creating request handler');
     createRequestHandler(
       async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
         const authSession = await fetchAuthSession();
@@ -90,10 +85,8 @@ async function protectedLoader() {
 }
 
 async function loginLoader() {
-  console.debug('login loader');
   const authSession = await fetchAuthSession();
   if (authSession?.tokens?.idToken) {
-    console.debug('redirecting to dashboard');
     return redirect('/dashboard');
   }
   return null;
